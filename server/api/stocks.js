@@ -7,19 +7,47 @@ const region = 'US',
 router.get('/', (req, res, next) => {
   try {
     unirest
-      .get(
-        `https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-summary?region=${region}&lang=${lang}`
-      )
-      .header('X-RapidAPI-Host', API_HOST)
-      .header('X-RapidAPI-Key', API_KEY)
+      .get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-movers`)
+      .headers({
+        'x-rapidapi-host': API_HOST,
+        'x-rapidapi-key': API_KEY
+      })
+      .query({
+        lang,
+        region
+      })
       .end(function(result) {
-        console.log(result.status, result.headers, result.body)
         res.send(result)
       })
   } catch (error) {
     next(error)
   }
 })
+
+router.get('/search/:keyword', (req, res, next) => {
+  try {
+    unirest
+      .get(
+        `https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/auto-complete`
+      )
+      .headers({
+        'x-rapidapi-host': API_HOST,
+        'x-rapidapi-key': API_KEY
+      })
+      .query({
+        lang,
+        region,
+        // this is going to have to be req.body or something, when i try searching for a single stock
+        query: req.params.keyword
+      })
+      .end(function(result) {
+        res.send(result)
+      })
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.get('/:symbol/chart', (req, res, next) => {
   try {
     unirest

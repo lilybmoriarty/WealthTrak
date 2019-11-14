@@ -1,14 +1,53 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {Chart} from '../components'
+import axios from 'axios'
 
 export class Stocks extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      searchTerm: '',
+      results: []
+    }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  async handleSubmit(event) {
+    event.preventDefault()
+    let stocks = await axios.get(`/api/stocks/search/${this.state.searchTerm}`)
+    stocks = stocks.data.body.ResultSet.Result
+    this.setState({
+      results: stocks
+    })
+  }
+
+  handleChange(event) {
+    this.setState({searchTerm: event.target.value}, () =>
+      console.log('this is this.state', this.state)
+    )
+  }
+
   render() {
+    console.log('this is this.state', this.state)
     return (
       <div>
-        {' '}
-        stocks page
-        <Chart />
+        <p>Symbol Lookup</p>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            <input onChange={this.handleChange} type="text" name="keyword" />
+          </label>
+          <button type="submit">Search</button>
+        </form>
+        {this.state.results.length > 0 ? (
+          <div>
+            {this.state.results.map(ticker => (
+              <h3 key={ticker.symbol}>{ticker.symbol}</h3>
+            ))}
+          </div>
+        ) : (
+          <div>{this.state.searchTerm ? 'no results' : ''}</div>
+        )}
       </div>
     )
   }
