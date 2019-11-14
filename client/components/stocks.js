@@ -7,7 +7,8 @@ export class Stocks extends React.Component {
     super()
     this.state = {
       searchTerm: '',
-      results: []
+      results: [],
+      noResults: false
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -17,6 +18,8 @@ export class Stocks extends React.Component {
     event.preventDefault()
     let stocks = await axios.get(`/api/stocks/search/${this.state.searchTerm}`)
     stocks = stocks.data.body.ResultSet.Result
+
+    if (!stocks.length) this.setState({noResults: true})
     this.setState({
       results: stocks
     })
@@ -46,7 +49,7 @@ export class Stocks extends React.Component {
             ))}
           </div>
         ) : (
-          <div>{this.state.searchTerm ? 'no results' : ''}</div>
+          <div>{this.state.noResults ? 'no results' : ''}</div>
         )}
       </div>
     )
