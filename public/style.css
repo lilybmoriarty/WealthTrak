@@ -19,3 +19,16 @@ form div {
   margin: 1em;
   display: inline-block;
 }
+
+.titles,
+.stock-line-items {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.single-stock-view {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import {Link} from 'react-router-dom'
 import axios from 'axios'
 
 export class Stocks extends React.Component {
@@ -44,9 +44,32 @@ export class Stocks extends React.Component {
         </form>
         {this.state.results.length > 0 ? (
           <div>
-            {this.state.results.map(ticker => (
-              <h3 key={ticker.symbol}>{ticker.symbol}</h3>
-            ))}
+            <div className="titles">
+              <p>Symbol</p>
+              <p>Name</p>
+              <p>Price</p>
+              <p>Change</p>
+              <p>% Change</p>
+              <p>Volume</p>
+              <p>Market Cap</p>
+            </div>
+            <div className="stock-line-items">
+              {this.state.results.map(ticker => (
+                <div id="single-line-item" key={ticker.symbol}>
+                  {/* <a href={`/stocks/${ticker.symbol}`}>{ticker.symbol}</a> */}
+                  <Link
+                    to={{
+                      pathname: `/stocks/${ticker.symbol}`,
+                      state: {results: this.state.results}
+                    }}
+                  >
+                    {ticker.symbol}
+                  </Link>
+
+                  <p>{ticker.name}</p>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <div>{this.state.noResults ? 'no results' : ''}</div>
